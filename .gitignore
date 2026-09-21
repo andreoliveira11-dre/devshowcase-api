@@ -1,0 +1,15 @@
+# Ambiente virtual do Python
+venv/
+
+# Arquivo com informações privadas
+.env
+
+# Cache criado automaticamente pelo Python
+__pycache__/
+*.pyc
+
+# Configurações locais do VS Code
+.vscode/
+
+# Cache de testes
+.pytest_cache/
