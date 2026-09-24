@@ -26,7 +26,10 @@ def create_profile(
     return profile
 
 
-def get_profile(db: Session, profile_id: int):
+def get_profile(
+    db: Session,
+    profile_id: int
+):
     return (
         db.query(models.Profile)
         .filter(models.Profile.id == profile_id)
@@ -38,7 +41,10 @@ def get_profile(db: Session, profile_id: int):
 # TECHNOLOGY
 # =========================
 
-def create_technology(db: Session, name: str):
+def create_technology(
+    db: Session,
+    name: str
+):
     technology = models.Technology(
         name=name
     )
@@ -77,7 +83,11 @@ def create_project(
 
     technologies = (
         db.query(models.Technology)
-        .filter(models.Technology.id.in_(technology_ids))
+        .filter(
+            models.Technology.id.in_(
+                technology_ids
+            )
+        )
         .all()
     )
 
@@ -96,5 +106,66 @@ def create_project(
     return project
 
 
-def get_projects(db: Session):
-    return db.query(models.Project).all()
+def get_project(
+    db: Session,
+    project_id: int
+):
+    return (
+        db.query(models.Project)
+        .filter(models.Project.id == project_id)
+        .first()
+    )
+
+
+def get_projects(
+    db: Session,
+    technology: str | None = None,
+    page: int = 1,
+    size: int = 10
+):
+    query = db.query(models.Project)
+
+    if technology:
+        query = (
+            query
+            .join(models.Project.technologies)
+            .filter(
+                models.Technology.name.ilike(
+                    technology
+                )
+            )
+        )
+
+    offset = (page - 1) * size
+
+    return (
+        query
+        .offset(offset)
+        .limit(size)
+        .all()
+    )
+
+
+# =========================
+# FEEDBACK
+# =========================
+
+def create_feedback(
+    db: Session,
+    project_id: int,
+    author: str,
+    comment: str,
+    rating: int
+):
+    feedback = models.Feedback(
+        project_id=project_id,
+        author=author,
+        comment=comment,
+        rating=rating
+    )
+
+    db.add(feedback)
+    db.commit()
+    db.refresh(feedback)
+
+    return feedback

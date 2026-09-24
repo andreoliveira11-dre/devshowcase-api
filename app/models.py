@@ -1,22 +1,18 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Table, Text
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, Table, Text
 from sqlalchemy.orm import relationship
 
 from app.database import Base
 
 
-# Tabela intermediária do relacionamento N:N
-# entre Project e Technology.
 project_technology = Table(
     "project_technology",
     Base.metadata,
-
     Column(
         "project_id",
         Integer,
         ForeignKey("projects.id"),
         primary_key=True
     ),
-
     Column(
         "technology_id",
         Integer,
@@ -52,6 +48,20 @@ class Project(Base):
         Integer,
         ForeignKey("profiles.id"),
         nullable=False
+    )
+
+    # NOVO NA ATIVIDADE 2
+    average_rating = Column(
+        Float,
+        nullable=False,
+        default=0.0
+    )
+
+    # NOVO NA ATIVIDADE 2
+    upvotes = Column(
+        Integer,
+        nullable=False,
+        default=0
     )
 
     profile = relationship(
@@ -90,6 +100,12 @@ class Feedback(Base):
     id = Column(Integer, primary_key=True, index=True)
     author = Column(String(100), nullable=False)
     comment = Column(Text, nullable=False)
+
+    # NOVO NA ATIVIDADE 2
+    rating = Column(
+        Integer,
+        nullable=False
+    )
 
     project_id = Column(
         Integer,

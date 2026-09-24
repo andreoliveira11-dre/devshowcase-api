@@ -43,7 +43,9 @@ class TechnologyCreate(BaseModel):
         value = value.strip()
 
         if not value:
-            raise ValueError("O nome da tecnologia não pode estar vazio.")
+            raise ValueError(
+                "O nome da tecnologia não pode estar vazio."
+            )
 
         return value
 
@@ -51,6 +53,38 @@ class TechnologyCreate(BaseModel):
 class TechnologyResponse(BaseModel):
     id: int
     name: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# =========================
+# FEEDBACK
+# =========================
+
+class FeedbackCreate(BaseModel):
+    author: str = Field(min_length=1, max_length=100)
+    comment: str = Field(min_length=1)
+    rating: int = Field(ge=1, le=5)
+
+    @field_validator("author", "comment")
+    @classmethod
+    def validar_texto(cls, value: str):
+        value = value.strip()
+
+        if not value:
+            raise ValueError(
+                "O campo não pode estar vazio."
+            )
+
+        return value
+
+
+class FeedbackResponse(BaseModel):
+    id: int
+    author: str
+    comment: str
+    rating: int
+    project_id: int
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -72,7 +106,9 @@ class ProjectCreate(BaseModel):
         value = value.strip()
 
         if not value:
-            raise ValueError("O título não pode estar vazio.")
+            raise ValueError(
+                "O título não pode estar vazio."
+            )
 
         return value
 
@@ -83,6 +119,10 @@ class ProjectResponse(BaseModel):
     description: str | None
     repository_url: str
     profile_id: int
+
     technologies: list[TechnologyResponse]
+
+    average_rating: float
+    upvotes: int
 
     model_config = ConfigDict(from_attributes=True)
