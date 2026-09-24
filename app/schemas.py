@@ -64,7 +64,7 @@ class ProjectCreate(BaseModel):
     description: str | None = None
     repository_url: HttpUrl
     profile_id: int = Field(gt=0)
-    technology_ids: list[int] = []
+    technology_ids: list[int] = Field(default_factory=list)
 
     @field_validator("title")
     @classmethod
